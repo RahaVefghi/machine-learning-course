@@ -1,37 +1,46 @@
 import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
-import tensorflow as tf
-import matplotlib.pyplot as plt 
+import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
-import numpy as np 
-import cv2
 
-base_dir = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(base_dir, "data", "mnist.npz")
+def load_mnist_data():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(base_dir, "data", "mnist.npz")
 
-if os.path.exists(data_path):
-    data = np.load(data_path)
-    X_train = data["x_train"]
-    Y_train = data["y_train"]
-    X_test = data["x_test"]
-    y_test = data["y_test"]
-else:
-    (X_train, Y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
+    if os.path.exists(data_path):
+        data = np.load(data_path)
+        x_train = data["x_train"]
+    else:
+        import tensorflow as tf
+        (x_train, _), _ = tf.keras.datasets.mnist.load_data()
 
-# img = X_test[100]
-# img = np.reshape(img, (28,28))
-# img = cv2.resize(img, (256,256))
-# cv2.imshow("image", img)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+    # Normalize and flatten
+    x_train = (x_train / 255.0).reshape((-1, 784))
+    return x_train
 
-X_train = X_train/255.0
-X_train = X_train.reshape((-1, 784))
-kmeans = KMeans(n_clusters=10, random_state=0)
-clusters = kmeans.fit_predict(X_train)
+def cluster_and_visualize(x_data, n_samples=10000):
+    # Cluster on a subset for fast training
+    subset = x_data[:n_samples]
+    print(f"Clustering {subset.shape[0]} MNIST images with K-Means...")
 
-center= kmeans.cluster_centers_.reshape((10, 28, 28))
-for i in range(10):
-  plt.subplot(2,5, i+1)
-  plt.imshow(center[i], cmap="gray")
-plt.show()  
+    kmeans = KMeans(n_clusters=10, random_state=42, n_init=10)
+    kmeans.fit(subset)
+
+    # Reconstruct 28x28 centroids
+    centers = kmeans.cluster_centers_.reshape((10, 28, 28))
+
+    fig, axes = plt.subplots(2, 5, figsize=(10, 5))
+    fig.suptitle("K-Means MNIST Cluster Centroids (28x28)", fontsize=14)
+
+    for i, ax in enumerate(axes.flat):
+        ax.imshow(centers[i], cmap="gray")
+        ax.set_title(f"Centroid {i}")
+        ax.axis("off")
+
+    plt.tight_layout()
+    plt.show()
+
+if __name__ == "__main__":
+    data = load_mnist_data()
+    cluster_and_visualize(data)

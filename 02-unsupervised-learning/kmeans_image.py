@@ -1,30 +1,28 @@
-import matplotlib.pyplot as plt 
-import cv2 
-from sklearn.cluster import KMeans 
-from sklearn.datasets import load_digits 
-import numpy as np 
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.datasets import load_digits
 
-digits = load_digits()
-# this code are for working with dataset
-# img = digits.data[1300]
-# img = np.reshape(img, (8,8))
-# img = cv2.resize(img,(128, 128) )
+def run_kmeans_digits():
+    digits = load_digits()
+    print(f"Loaded Digits Dataset: {digits.data.shape[0]} samples, {digits.data.shape[1]} features (8x8 pixels)")
 
-# cv2.imshow("image", img)
-# cv2.waitKey()
-# cv2.destroyAllWindows()
+    # Fit K-Means with 10 clusters (digits 0 to 9)
+    kmeans = KMeans(n_clusters=10, random_state=42, n_init=10)
+    kmeans.fit(digits.data)
 
-kmeans = KMeans(n_clusters=10, random_state=0)
-clusters = kmeans.fit_predict(digits.data)
+    # Reshape cluster centers back to 8x8 image representations
+    centers = kmeans.cluster_centers_.reshape((10, 8, 8))
 
-# img = kmeans.cluster_centers_[0].reshape((8,8))
-# cv2.imshow("image", img)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+    fig, axes = plt.subplots(2, 5, figsize=(10, 4))
+    fig.suptitle("K-Means Cluster Centers (8x8 Learned Digits)", fontsize=14)
 
-centers = kmeans.cluster_centers_.reshape((10,8,8))
-for i in range(1,11):
-  plt.subplot(2,5,i)
-  plt.imshow(centers[i-1])
-  
-plt.show()  
+    for i, ax in enumerate(axes.flat):
+        ax.imshow(centers[i], cmap="binary", interpolation="nearest")
+        ax.set_title(f"Cluster {i}")
+        ax.axis("off")
+
+    plt.tight_layout()
+    plt.show()
+
+if __name__ == "__main__":
+    run_kmeans_digits()
