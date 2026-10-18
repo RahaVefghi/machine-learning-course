@@ -1,0 +1,77 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary runner files
+tempCodeRunnerFile*
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Operating System
+.DS_Store
+Thumbs.db
+__MACOSX/
+
+# Video and large archive formats
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.rar
+*.zip
+*.7z
+*.tar.gz
+
+# Trained Model Weights & Checkpoints (Heavy binaries)
+*.h5
+*.keras
+*.z
+*.pkl
+*.pt
+*.pth
+*.onnx
+
+# Large Training Datasets (Keep sample images, ignore heavy folders if added)
+fire_dataset/
+gender_dataset/
+digit-images/
+mnist_train.csv
+mnist_test.csv
